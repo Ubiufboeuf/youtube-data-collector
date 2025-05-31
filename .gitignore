@@ -1,0 +1,10 @@
+node_modules
+resultados/*
+recursos/assets/*
+recursos/info/*
+recursos/por_procesar/1_audios/*
+recursos/por_procesar/1_videos_sin_audio/*
+recursos/procesados/2_videos/*
+recursos/procesados/3_audios/*
+recursos/procesados/3_videos_sin_audio/*
+default.json
