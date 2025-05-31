@@ -1,6 +1,6 @@
 import { mkdirpSync, writeFileSync } from 'fs-extra'
 
-const DEFAULT_CWD_FOLDER = '/home/mango/Dev/youtube-video-data-collector'
+const DEFAULT_CWD_FOLDER = '/home/mango/Dev/youtube-data-collector'
 
 verificarElementos()
 
