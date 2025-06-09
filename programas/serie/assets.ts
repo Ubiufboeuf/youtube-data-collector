@@ -8,6 +8,10 @@ assets()
 // export async function assets (videoId: string) {
 export async function assets () {
   const videoId = process.argv[2]
+  if (!videoId) {
+    console.error('Falta especificar el id del video')
+    return
+  }
   console.log('- assets:', videoId)
   let info: YTVideoInfo
   try {
@@ -88,6 +92,12 @@ export async function assets () {
 
   async function saveImage (img: Thumbnail) {
     if (!img.url) return
+    try {
+      new URL(img.url)
+    } catch {
+      console.error('url inválida')
+      return
+    }
     const data = await fetch(img.url)
     const buffer = await data.arrayBuffer()
     const type = data.headers.get('content-type')
@@ -102,15 +112,15 @@ export async function assets () {
     else return
 
     mkdirpSync(path)
-    const files = readdirSync(path)
-    const exist = files.some(f => f.includes(name))
+    const exist = newThumbnails.some(t => t.url?.includes(name))
+    console.log({exist, img})
     if (exist) return
     
     newThumbnails.push({
       ...img,
       url: `${videoId}/${name}.${format}`
     })
-    // console.log({newThumbnails})
+    console.log({newThumbnails})
     writeFileSync(`${path}/${name}.${format}`, Buffer.from(buffer))
   }
 }

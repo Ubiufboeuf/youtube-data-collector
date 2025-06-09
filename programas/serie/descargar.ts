@@ -3,12 +3,17 @@ import { readdirSync, unlinkSync } from 'node:fs'
 import { stdin, stdout } from 'node:process'
 import { createInterface } from 'node:readline/promises'
 
-const DEFAULT_RESOLUTIONS = '243,251'
+const DEFAULT_VIDEO_RESOLUTION = '278' // ~144p
+const DEFAULT_AUDIO_RESOLUTION = '251' // ~audio
 descargar()
 
 // export async function descargar (videoId: string) {
 export async function descargar () {
   const videoId = process.argv[2]
+  if (!videoId) {
+    console.error('Falta especificar el id del video')
+    return
+  }
   console.log('- descargar:', videoId)
   const audiosPorProcesar = readdirSync('recursos/por_procesar/1_audios')
   const videosPorProcesar = readdirSync('recursos/por_procesar/1_videos_sin_audio')
@@ -28,16 +33,20 @@ export async function descargar () {
   const rl = createInterface({ input: stdin, output: stdout })
   let answer: string
 
+  let default_resolutions = `${DEFAULT_VIDEO_RESOLUTION},${DEFAULT_AUDIO_RESOLUTION}`
   console.log('Elije el id de los elementos a descargar, de la forma [videoId],[audioId] (omite todos los espacios que puedas)')
   if (faltaAudio && faltaVideo) {
     console.log('Falta audio y video')
   } else if (faltaAudio) {
     console.log('Sólo falta audio, entonces escribe: ,[audioId]')
+    default_resolutions = `,${DEFAULT_AUDIO_RESOLUTION}`
   } else if (faltaVideo) {
     console.log('Sólo falta video, entonces escribe: [videoId],')
+    default_resolutions = `${DEFAULT_VIDEO_RESOLUTION},`
   }
 
-  answer = await rl.question(`Para descargar (por defecto ${DEFAULT_RESOLUTIONS}): `) || DEFAULT_RESOLUTIONS
+  answer = await rl.question(`Para descargar (por defecto ${default_resolutions}): `) || default_resolutions
+  answer = default_resolutions
 
   rl.close()
 
@@ -54,6 +63,12 @@ export async function descargar () {
   if (faltaAudio) {
     spawnSync('yt-dlp', ytDlpParamsAudio)
     spawnSync('ffmpeg', ffmpegParamsAudio)
-    unlinkSync(`recursos/por_procesar/1_audios/${videoId}.opus`)
+
+    const audios = readdirSync(`recursos/por_procesar/1_audios/`)
+    if (audios.includes(`${videoId}.opus`)) {
+      unlinkSync(`recursos/por_procesar/1_audios/${videoId}.opus`)
+    } else {
+      console.log('No se descargó el audio')
+    }
   }
 }

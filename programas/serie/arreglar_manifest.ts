@@ -7,6 +7,10 @@ type VideoInfo = { [key: string]: string | number | boolean }
 // export async function arreglar_manifest (videoId: string, resoluciones: string[] = RESOLUCIONES_POR_DEFECTO) {
 export async function arreglar_manifest () {
   const videoId = process.argv[2]
+  if (!videoId) {
+    console.error('Falta especificar el id del video')
+    return
+  }
   console.log('- arreglar_manifest:', videoId)
   let folder: string[]
   try {

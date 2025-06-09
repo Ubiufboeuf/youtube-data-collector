@@ -9,6 +9,10 @@ info()
 // export function info (videoId: string) {
 export function info () {
   const videoId = process.argv[2]
+  if (!videoId) {
+    console.error('Falta especificar el id del video')
+    return
+  }
   console.log(`- info: ${videoId}`)
   let formats: string[]
   try {
@@ -87,8 +91,9 @@ export function info () {
   // durationAvg = durationAvg / durationLength
   newInfo.duration = durationAvg / ((newInfo.formats?.length ?? 0) + 1)
   
-  const instant = Temporal.Instant.fromEpochMilliseconds((ytInfo?.release_timestamp || 1) * 1000)
+  const instant = Temporal.Instant.fromEpochMilliseconds((ytInfo?.timestamp || 1) * 1000)
   newInfo.release_datestring = instant.toString()
+  if (newInfo?.timestamp) delete newInfo.timestamp
 
   writeFileSync(`recursos/info/${videoId}.json`, JSON.stringify(newInfo, null, 2))
 

@@ -7,6 +7,10 @@ verificarElementos()
 // export function verificarElementos (videoId: string) {
 export function verificarElementos () {
   const videoId = process.argv[2]
+  if (!videoId) {
+    console.error('Falta especificar el id del video')
+    return
+  }
   console.log(`- verificar_elementos: ${videoId}`)
   const cwd = process.cwd()
   if (cwd !== DEFAULT_CWD_FOLDER) {

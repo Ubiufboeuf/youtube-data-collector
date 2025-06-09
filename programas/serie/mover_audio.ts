@@ -5,6 +5,10 @@ mover_audio()
 // export function mover_audio (videoId: string) {
 export function mover_audio () {
   const videoId = process.argv[2]
+  if (!videoId) {
+    console.error('Falta especificar el id del video')
+    return
+  }
   console.log('- mover_audio')
   const audios = readdirSync(`recursos/procesados/3_audios/`)
 

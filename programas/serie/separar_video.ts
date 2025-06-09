@@ -6,6 +6,10 @@ separar_video()
 // export function separar_video (videoId: string) {
 export function separar_video () {
   const videoId = process.argv[2]
+  if (!videoId) {
+    console.error('Falta especificar el id del video')
+    return
+  }
   console.log('- separar_video:', videoId)
   const videosProcesados = readdirSync(`recursos/procesados/2_videos`)
   const videosSinAudio = readdirSync(`recursos/procesados/3_videos_sin_audio`)

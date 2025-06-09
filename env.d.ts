@@ -23,6 +23,7 @@ export interface YTVideoInfo extends Object {
   minimalThumbnail?: string
   formats?: Format[]
   release_timestamp?: number
+  timestamp?: number
 }
 
 export interface Thumbnail {

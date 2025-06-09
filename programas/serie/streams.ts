@@ -6,6 +6,10 @@ streams()
 // export function streams (videoId: string) {
 export function streams () {
   const videoId = process.argv[2]
+  if (!videoId) {
+    console.error('Falta especificar el id del video')
+    return
+  }
   console.log('- streams:', videoId)
   let contenidoCarpetaVideo: string[]
   try {

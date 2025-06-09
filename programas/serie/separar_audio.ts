@@ -7,6 +7,10 @@ separar_audio()
 // export function separar_audio (videoId: string) {
 export function separar_audio () {
   const videoId = process.argv[2]
+  if (!videoId) {
+    console.error('Falta especificar el id del video')
+    return
+  }
   console.log('- separar_audio:', videoId)
   const videosProcesados = readdirSync(`recursos/procesados/2_videos`)
   const audiosProcesados = readdirSync(`recursos/procesados/3_audios`)

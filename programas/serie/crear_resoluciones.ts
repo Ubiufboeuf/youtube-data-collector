@@ -3,9 +3,10 @@ import { mkdirpSync, readdirSync } from 'fs-extra'
 
 const RESOLUCIONES_POR_DEFECTO: string[] = [
   '32p',
-  // '144p',
+  '144p',
   '360p',
-  // '720p'
+  // '720p',
+  // '1080p'
 ] // Si quieres quitar una resolución no la elimines, coméntala
 
 crear_resoluciones()
@@ -15,6 +16,10 @@ crear_resoluciones()
 // export function crear_resoluciones (videoId: string, resoluciones: string[] = RESOLUCIONES_POR_DEFECTO) {
 export function crear_resoluciones (resoluciones = RESOLUCIONES_POR_DEFECTO) {
   const videoId = process.argv[2]
+  if (!videoId) {
+    console.error('Falta especificar el id del video')
+    return
+  }
   console.log('- crear_resoluciones:', videoId)
   if (!resoluciones || !resoluciones.length) {
     console.warn('No se especificó ninguna resolución, no se creará ninguna (no estoy contando audio, eso es aparte)')
@@ -53,13 +58,16 @@ export function crear_resoluciones (resoluciones = RESOLUCIONES_POR_DEFECTO) {
     console.log(`Todas las resoluciones deseadas para ${videoId} están hechas, omitiendo`)
     return
   }
+
+  console.time('crear resoluciones')
+  console.log('Si el proceso se completó muy rápido seguramente sea porque dió error')
   spawnSync('ffmpeg', parametros)
   
-  console.log('Si el proceso se completó muy rápido seguramente sea porque dió error')
   // const proceso = spawnSync('ffmpeg', parametros)
 
   // const stdout = proceso.stdout.toString()
   // const stderr = proceso.stderr.toString()
 
   // console.log('stdout:', stdout, 'stderr:', stderr)
+  console.timeEnd('crear resoluciones')
 }

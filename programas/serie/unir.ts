@@ -7,6 +7,10 @@ unir()
 // export function unir (videoId: string) {
 export function unir () {
   const videoId = process.argv[2]
+  if (!videoId) {
+    console.error('Falta especificar el id del video')
+    return
+  }
   console.log('- unir:', videoId)
   const videosSinAudioPorProcesar = readdirSync(`recursos/por_procesar/1_videos_sin_audio`)
   const audiosPorProcesar = readdirSync(`recursos/por_procesar/1_audios`)

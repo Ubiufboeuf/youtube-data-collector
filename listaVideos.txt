@@ -1,0 +1,35 @@
+[x]: Completo
+[d]: Video y audio descargados
+[v]: Video descargado
+[a]: Audio descargado
+[ ]: Pendiente
+
+[x]|==1==|I3ZozsgDDqI|==2==|Eve|==3==|Flower storm|==4==|
+[d]|==1==|E8RMWLoAsa0|==2==|ZUTOMAYO|==3==|Blues in the closet|==4==|
+[d]|==1==|9PnCSI8ndws|==2==|ZUTOMAYO|==3==|Quilt|==4==|
+[d]|==1==|PLG2Uexyi9s|==2==|ZUTOMAYO|==3==|Hippocampal pain|==4==|
+[d]|==1==|Pv56oBAfRhY|==2==|Eve|==3==|Taikutsuwo Saienshinaide|==4==|
+[d]|==1==|U7L-3VXAkSA|==2==|Eve|==3==|Inochi no tabekata (Cómo comer una vida)|==4==|
+[v]|==1==|nBteO-bU78Y|==2==|Eve|==3==|Bokura mada Underground|==4==|
+[d]|==1==|ulfY8WQE_HE|==2==|Eve|==3==|Raison d'etre (Rasón de ser)|==4==|
+[d]|==1==|29Q2EtUihB0|==2==|THX|==3==|ペルソナ5X - ボーカル曲|==4==|
+[d]|==1==|p0OH206z9Wg|==2==|midudev|==3==|música para programar, trabajar y estudiar - {code-fi} 👨‍💻|==4==|
+[v]|==1==|MF8RFD7tk48|==2==|Cry café|==3==|Persona 5 Jazz Cafe Mix (w/ Cafe & Rain Ambience)|==4==|
+[d]|==1==|sWtEYPva4A0|==2==|Sam Cisco|==3==|Música relajante de Zelda con ambiente de fogata|==4==|
+[d]|==1==|hhHopWDPRrY|==2==|bigboolstudio|==3==|Ｐｅｒｓｏｎａᵐᵘˢⁱᶜ|==4==|
+[d]|==1==|GhMkNB_D2xg|==2==|ゼンレスゾーンゼロ-ZZZ-公式|==3==|Miniálbum de Ellen - BITE! | Zenless Zone Zero|==4==|
+[d]|==1==|lIyONMmoepU|==2==|Tri-line|==3==|Depresión|==4==|
+[d]|==1==|xHsHrW5ZJfs|==2==|Tri-line|==3==|Consejos para ser feliz con Tri-line|==4==|
+[d]|==1==|39uWfsWYXms|==2==|Tri-line|==3==|Esto no es un vídeo motivacional|==4==|
+[d]|==1==|RZB8WMuf2aQ|==2==|Lyn: Tema|==3==|Daredevil|==4==|
+[d]|==1==|N4saztGxyVI|==2==|Lyn: Tema|==3==|Counter Strike|==4==|
+[d]|==1==|-U0SFi2ajEU|==2==|Tri-line|==3==|¿Por qué vemos fantasmas?|==4==|
+[d]|==1==|Xs0Lxif1u9E|==2==|RADWIMPS|==3==|RADWIMPS - すずめ feat.十明 [Official Lyric Video]|==4==|
+[d]|==1==|mIrSNYPFzZM|==2==|midudev|==3==|El GRAN Problema de SCRUM|==4==|
+[d]|==1==|-vRuTyqu9YY|==2==|Tri-line|==3==|Todo el mundo usa ChatGPT - Cosas que no sabías|==4==|
+[d]|==1==|nBplizCvFow|==2==|Tri-line|==3==|Cómo engañar a todo el mundo|==4==|
+[d]|==1==|OFfi4U8MLws|==2==|Tri-line|==3==|La oscuridad oculta del dinero|==4==|
+[d]|==1==|WRc8lz-bp78|==2==|midulive|==3==|Clon de Spotify DESDE CERO con Astro 3, React JS, Svelte y TailwindCSS|==4==|
+[d]|==1==|zjEMFuj23B4|==2==|ZUTOMAYO|==3==|ずっと真夜中でいいのに。『シェードの埃は延長』MV (ZUTOMAYO - SHADE)|==4==|
+[d]|==1==|dcOwj-QE_ZE|==2==|ZUTOMAYO|==3==|ずっと真夜中でいいのに。『暗く黒く』MV（ZUTOMAYO – DARKEN）|==4==|
+[d]|==1==|e5LaKxJVeVI|==2==|ZUTOMAYO|==3==|ずっと真夜中でいいのに。『綺羅キラー (feat. Mori Calliope)』MV (ZUTOMAYO – Kira Killer)|==4==|

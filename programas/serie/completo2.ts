@@ -1,8 +1,9 @@
 // Haría falta un programa para descargar los videos, pero al menos esto por ahora funciona.
 
 import { exec, spawn, spawnSync } from 'child_process' // Import spawn here
-import { cwd } from 'process'
+import { cwd as _cwd } from 'process'
 import util from 'util'
+const cwd = _cwd()
 
 // Promisify exec for easier async/await usage
 const execPromise = util.promisify(exec)
@@ -12,22 +13,13 @@ const execPromise = util.promisify(exec)
 async function processVideo() {
   const videoId = process.argv[2]
   if (!videoId) {
-    console.error('Falta especificar el id del video al ejecutar el comando')
+    console.error('Falta especificar el id del video')
     return
-  }
-
-  console.log('Consiguiendo nombre del video...')
-  try {
-    const paramsGetTitle = ['-e', `https://www.youtube.com/watch?v=${videoId}`]
-    const title = spawnSync(`yt-dlp`, paramsGetTitle).output.toString()
-    console.log('Nombre:', title)
-  } catch {
-    console.error('No se pudo conseguir el nombre de video')
   }
 
   try {
     console.log('Verificando elementos...')
-    await execPromise(`bun ${cwd()}/programas/serie/verificar_elementos.ts ${videoId}`)
+    await execPromise(`bun ${cwd}/programas/serie/verificar_elementos.ts ${videoId}`)
     console.log('Elementos verificados.')
 
     // --- Descargar (interactive step with spawn) ---
@@ -35,7 +27,7 @@ async function processVideo() {
     // Arguments for bun: the script path, then the videoId
     const downloadProcess = spawn(
       'bun',
-      [`${cwd()}/programas/serie/descargar.ts`, videoId],
+      [`${cwd}/programas/serie/descargar.ts`, videoId],
       {
         stdio: 'inherit', // This is key: pipes stdin, stdout, and stderr
         // 'inherit' means the child process will use the parent's stdin/stdout/stderr
@@ -64,43 +56,67 @@ async function processVideo() {
     // --- Remaining steps (can likely use execPromise if not interactive) ---
 
     console.log('Uniendo...')
-    await execPromise(`bun ${cwd()}/programas/serie/unir.ts ${videoId}`)
+    await execPromise(`bun ${cwd}/programas/serie/unir.ts ${videoId}`)
     console.log('Unión completa.')
 
     console.log('Separando audio...')
-    await execPromise(`bun ${cwd()}/programas/serie/separar_audio.ts ${videoId}`)
+    await execPromise(`bun ${cwd}/programas/serie/separar_audio.ts ${videoId}`)
     console.log('Audio separado.')
 
     console.log('Separando video...')
-    await execPromise(`bun ${cwd()}/programas/serie/separar_video.ts ${videoId}`)
+    await execPromise(`bun ${cwd}/programas/serie/separar_video.ts ${videoId}`)
     console.log('Video separado.')
 
     console.log('Creando resoluciones...')
-    await execPromise(`bun ${cwd()}/programas/serie/crear_resoluciones.ts ${videoId}`)
+    // Arguments for bun: the script path, then the videoId
+    const makeResolutionsProcess = spawn(
+      'bun',
+      [`${cwd}/programas/serie/crear_resoluciones.ts`, videoId],
+      {
+        stdio: 'inherit', // This is key: pipes stdin, stdout, and stderr
+        // 'inherit' means the child process will use the parent's stdin/stdout/stderr
+        // This makes readline work and shows output in real-time
+      }
+    )
+
+    // Create a promise that resolves when the spawn process exits
+    await new Promise((resolve, reject) => {
+      makeResolutionsProcess.on('close', (code) => {
+        if (code === 0) {
+          resolve(code)
+        } else {
+          reject(new Error(`El proceso de crear las resoluciones terminó con código ${code}`))
+        }
+      })
+
+      makeResolutionsProcess.on('error', (err) => {
+        reject(new Error(`Fallo al crear resoluciones: ${err.message}`))
+      })
+    })
     console.log('Resoluciones creadas.')
 
     console.log('Moviendo audio...')
-    await execPromise(`bun ${cwd()}/programas/serie/mover_audio.ts ${videoId}`)
+    await execPromise(`bun ${cwd}/programas/serie/mover_audio.ts ${videoId}`)
     console.log('Audio movido.')
 
     console.log('Procesando streams...')
-    await execPromise(`bun ${cwd()}/programas/serie/streams.ts ${videoId}`)
+    await execPromise(`bun ${cwd}/programas/serie/streams.ts ${videoId}`)
     console.log('Streams procesados.')
 
     console.log('Arreglando manifest...')
-    await execPromise(`bun ${cwd()}/programas/serie/arreglar_manifest.ts ${videoId}`)
+    await execPromise(`bun ${cwd}/programas/serie/arreglar_manifest.ts ${videoId}`)
     console.log('Manifest arreglado.')
 
     console.log('Obteniendo información...')
-    await execPromise(`bun ${cwd()}/programas/serie/info.ts ${videoId}`)
+    await execPromise(`bun ${cwd}/programas/serie/info.ts ${videoId}`)
     console.log('Información obtenida.')
 
     console.log('Procesando assets...')
-    await execPromise(`bun ${cwd()}/programas/serie/assets.ts ${videoId}`)
+    await execPromise(`bun ${cwd}/programas/serie/assets.ts ${videoId}`)
     console.log('Assets procesados.')
 
     console.log('Moviendo datos...')
-    await execPromise(`bun ${cwd()}/programas/serie/mover_a_produccion.ts ${videoId}`)
+    await execPromise(`bun ${cwd}/programas/serie/mover_a_produccion.ts ${videoId}`)
     console.log('Datos movidos.')
 
     console.log('¡Proceso completado para el video:', videoId)
