@@ -1,12 +1,26 @@
 import { exec, spawn, spawnSync } from 'child_process'
-import { readdirSync, readFileSync, writeFileSync } from 'fs'
-import util from 'util'
-const execPromise = util.promisify(exec)
+import { readdirSync, readFileSync, writeFile, writeFileSync } from 'fs'
+import { verificarElementos } from './verificar_elementos'
 
-const cwd = process.cwd()
-let numeroDePendientes = 0
+const COMPLETO = '[x]'
+const DESCARGADO = '[d]'
+const AUDIO = '[a]'
+const VIDEO = '[v]'
+const PENDIENTE = '[ ]'
+
+iterarLista()
 
 async function iterarLista () {
+  const { argv } = process
+  if (argv.includes('completo') && argv.includes('descargar')) {
+    console.error('No uses completo y descargar a la vez, despistao')
+    return
+  }
+  const noAsk = argv.some(a => a.toLowerCase() === 'noask')
+  const noSearch = argv.some(a => a.toLowerCase() === 'nosearch')
+  const skipX = argv.some(a => a.toLowerCase() === 'skipx')
+
+  console.log('- iterarLista')
   let lista: string
   try {
     const data = readFileSync(`listaVideos.txt`, { encoding: 'utf8' })
@@ -16,93 +30,147 @@ async function iterarLista () {
     return
   }
 
-  let listaVideosDescargados: string[] = []
+  let videosDescargados: string[] = []
   try {
-    listaVideosDescargados = readdirSync('recursos/por_procesar/1_videos_sin_audio', 'utf8')
+    videosDescargados = readdirSync('recursos/por_procesar/1_videos_sin_audio', 'utf8')
   } catch {
     console.error('Error leyendo la carpeta de videos sin procesar (recursos/por_procesar/1_videos_sin_audio)')
   }
 
-  let listaAudiosDescargados: string[] = []
+  let audiosDescargados: string[] = []
   try {
-    listaAudiosDescargados = readdirSync('recursos/por_procesar/1_audios', 'utf8')
+    audiosDescargados = readdirSync('recursos/por_procesar/1_audios', 'utf8')
   } catch {
     console.error('Error leyendo la carpeta de audios sin procesar (recursos/por_procesar/1_audios)')
   }
 
-  if (!listaAudiosDescargados?.length && !listaVideosDescargados?.length) {
-    console.error('No se pudieron leer ni los videos ni audios sin procesar, probablemente porque no haya ninguno')
+  if (!audiosDescargados?.length && !videosDescargados?.length) {
+    console.error('No se pudieron leer los videos y audios descargados')
+    return
+  }
+
+  let completos: string[] = []
+  try {
+    completos = readdirSync('resultados', 'utf8')
+  } catch {
+    console.error('Error leyendo la carpeta de resultados')
     return
   }
 
   const lineas = lista.split('\n')
   const regex = /(.*)\|==1==\|(.*)\|==2==\|(.*)\|==3==\|(.*)\|==4==\|/i
 
+  console.log('Iterando lista...')
+
   for (const idx in lineas) {
     const linea = lineas[idx]
     const match = linea.match(regex)
     if (!match) continue
 
-    // 4 separadores, 5 valores, el último indefinido
-    // console.log(match[1], match[2], match[3], match[4])
+    let [, state, id] = match
+    if (!state || !id) continue
 
-    let [, state, id, uploader, title] = match
+    let localState = state
+    const existeAudio = audiosDescargados.some(a => a.includes(id))
+    const existeVideo = videosDescargados.some(v => v.includes(id))
+    const terminado = completos.some(c => c.includes(id))
 
-    if (!id) {
-      // console.warn(`Falta id en la línea ${idx + 1}`)
-    }
-
-    if (state === '[x]') continue
-    
-    let newState = state
-
-    if (listaAudiosDescargados.some(a => a.includes(id)) && listaVideosDescargados.some(v => v.includes(id))) {
-      newState = '[d]'
-    } else if (listaAudiosDescargados.some(a => a.includes(id))) {
-      newState = '[a]'
-    } else if (listaVideosDescargados.some(v => v.includes(id))) {
-      newState = '[v]'
+    if (terminado) {
+      localState = COMPLETO
+    } else if (existeAudio && existeVideo) {
+      localState = DESCARGADO
+    } else if (existeAudio) {
+      localState = AUDIO
+    } else if (existeVideo) {
+      localState = VIDEO
     } else {
-      newState = '[ ]'
+      localState = PENDIENTE
     }
 
-    // if (newState === state) {
-    //   lineas[idx] = `${newState}|==1==|${id}|==2==|${uploader}|==3==|${title}|==4==|`
-    //   const newData = lineas.join('\n')
-    //   writeFileSync('listaVideos.txt', newData, { encoding: 'utf8', mode: '' })
-    //   // continue
-    // }
-
-    console.log(state, id)
-
-    await execPromise(`bun ${cwd}/programas/serie/verificar_elementos.ts ${id}`)
-
-    if (state === '[a]' || state === '[v]' || state === '[ ]') {
-      // console.log('Descargando...')
-      const downloadProcess = spawn('bun', [`${cwd}/programas/serie/descargar.ts`, id], { stdio: 'inherit' })
-
-      await new Promise((resolve, reject) => {
-        downloadProcess.on('close', (code) => {
-          if (code === 0) {
-            lineas[idx] = `${newState}|==1==|${id}|==2==|${uploader}|==3==|${title}|==4==|`
-            const newData = lineas.join('\n')
-            writeFileSync('listaVideos.txt', newData, { encoding: 'utf8', mode: '' })
-            resolve(code)
-          }
-          else reject(new Error(`El proceso de descarga terminó con código ${code}`))
-        })
-
-        downloadProcess.on('error', (err) => {
-          reject(new Error(`Fallo al iniciar el proceso de descarga: ${err.message}`))
-        })
-      })
-      // console.log('Descarga completa.')
+    // console.log(`${state} → ${localState}: ${id} - ${nombre}`)
+    
+    if (argv.includes('completo')) {
+      await completo({ idx, lineas, localState, match, noAsk, noSearch })
+    } else {
+      await descargar({ idx, lineas, localState, match, noAsk, skipX })
     }
-
-    lineas[idx] = `${newState}|==1==|${id}|==2==|${uploader}|==3==|${title}|==4==|`
-    const newData = lineas.join('\n')
-    writeFileSync('listaVideos.txt', newData, { encoding: 'utf8', mode: '' })
   }
+
+  console.log('Lista iterada')
 }
 
-iterarLista()
+function getLinea ({ newState, id, uploader, title }: { newState: string, id: string, uploader: string, title: string }) {
+  return `${newState}|==1==|${id}|==2==|${uploader}|==3==|${title}|==4==|`
+}
+
+function write ({ lineas, idx, newState, match }) {
+  const [_, __, id, uploader, title] = match
+  lineas[idx] = getLinea({ newState, id, uploader, title })
+  const newData = lineas.join('\n')
+  writeFileSync('listaVideos.txt', newData, 'utf8')
+}
+
+async function completo ({ idx, match, lineas, localState, noAsk, noSearch }: { idx: string, match: RegExpMatchArray, lineas: string[], localState: string, noAsk: boolean, noSearch: boolean }) {
+  const [, state, id, uploader, title] = match
+
+  let completoSegunArchivos = false
+  if (!noSearch) {
+    try {
+      const resultado = readdirSync(`resultados/${id}/`, 'utf8')
+      const validos = { 'manifest': true, 'hidden': true, 'audio': true }
+      if (resultado.some(file => validos[file] || file.includes('p'))) {
+        completoSegunArchivos = true
+      }
+    } catch {
+      console.error(`Error leyendo la carpeta resultados/${id}/`)
+    }
+  }
+
+  if (localState !== DESCARGADO || completoSegunArchivos) return
+
+  console.log(`${state} → ${localState}: ${id}`)
+  
+  let newState = ''
+  try {
+    await new Promise((resolve, reject) => {
+      const params = [`programas/serie/completo2.ts`, id, noAsk ? 'noAsk' : '']
+      const process = spawn('bun', params, { stdio: 'inherit' })
+      process.on('close', (code) => (code) ? resolve(COMPLETO) : reject(null))
+      process.on('error', () => reject(null))
+    })
+  } catch {
+    console.error(`Error procesando el video: ${id}`)
+    return
+  }
+
+  lineas[idx] = getLinea({ newState, id, uploader, title })
+  const newData = lineas.join('\n')
+  writeFileSync('listaVideos.txt', newData, 'utf8')
+}
+
+async function descargar ({ idx, match, lineas, localState, noAsk, skipX }: { idx: string, match: RegExpMatchArray, lineas: string[], localState: string, noAsk: boolean, skipX: boolean }) {
+  const [, state, id, uploader, title] = match
+  
+  if (skipX && state === COMPLETO) return
+  if ((localState === DESCARGADO || localState === COMPLETO)) {
+    write({ lineas, idx, newState: localState, match })
+    return
+  }
+
+  console.log(`${state} → ${localState}: ${id}`)
+  
+  let newState = ''
+  try {
+    await new Promise((resolve, reject) => {
+      const params = [`programas/serie/descargar.ts`, id, noAsk ? 'noAsk' : '']
+      const process = spawn('bun', params, { stdio: 'inherit' })
+      process.on('close', (code) => (code) ? resolve(DESCARGADO) : reject(''))
+      process.on('error', () => reject(''))
+    })
+  } catch {
+    console.error(`Error descargando el video: ${id}`)
+    return
+  }
+
+  write({ lineas, idx, newState, match })
+}

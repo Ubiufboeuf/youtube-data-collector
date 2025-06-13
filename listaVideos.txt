@@ -1,20 +1,18 @@
-[x]: Completo
-[d]: Video y audio descargados
-[v]: Video descargado
-[a]: Audio descargado
-[ ]: Pendiente
+[x]      | [d]           | [v]   | [a]   | [] o [ ]
+Completo | Video + Audio | Video | Audio | Pendiente
+----------------------------------------------------
 
 [x]|==1==|I3ZozsgDDqI|==2==|Eve|==3==|Flower storm|==4==|
-[d]|==1==|E8RMWLoAsa0|==2==|ZUTOMAYO|==3==|Blues in the closet|==4==|
 [d]|==1==|9PnCSI8ndws|==2==|ZUTOMAYO|==3==|Quilt|==4==|
+[d]|==1==|E8RMWLoAsa0|==2==|ZUTOMAYO|==3==|Blues in the closet|==4==|
 [d]|==1==|PLG2Uexyi9s|==2==|ZUTOMAYO|==3==|Hippocampal pain|==4==|
 [d]|==1==|Pv56oBAfRhY|==2==|Eve|==3==|Taikutsuwo Saienshinaide|==4==|
 [d]|==1==|U7L-3VXAkSA|==2==|Eve|==3==|Inochi no tabekata (Cómo comer una vida)|==4==|
-[v]|==1==|nBteO-bU78Y|==2==|Eve|==3==|Bokura mada Underground|==4==|
+[d]|==1==|nBteO-bU78Y|==2==|Eve|==3==|Bokura mada Underground|==4==|
 [d]|==1==|ulfY8WQE_HE|==2==|Eve|==3==|Raison d'etre (Rasón de ser)|==4==|
 [d]|==1==|29Q2EtUihB0|==2==|THX|==3==|ペルソナ5X - ボーカル曲|==4==|
 [d]|==1==|p0OH206z9Wg|==2==|midudev|==3==|música para programar, trabajar y estudiar - {code-fi} 👨‍💻|==4==|
-[v]|==1==|MF8RFD7tk48|==2==|Cry café|==3==|Persona 5 Jazz Cafe Mix (w/ Cafe & Rain Ambience)|==4==|
+[d]|==1==|MF8RFD7tk48|==2==|Cry café|==3==|Persona 5 Jazz Cafe Mix (w/ Cafe & Rain Ambience)|==4==|
 [d]|==1==|sWtEYPva4A0|==2==|Sam Cisco|==3==|Música relajante de Zelda con ambiente de fogata|==4==|
 [d]|==1==|hhHopWDPRrY|==2==|bigboolstudio|==3==|Ｐｅｒｓｏｎａᵐᵘˢⁱᶜ|==4==|
 [d]|==1==|GhMkNB_D2xg|==2==|ゼンレスゾーンゼロ-ZZZ-公式|==3==|Miniálbum de Ellen - BITE! | Zenless Zone Zero|==4==|
@@ -33,3 +31,7 @@
 [d]|==1==|zjEMFuj23B4|==2==|ZUTOMAYO|==3==|ずっと真夜中でいいのに。『シェードの埃は延長』MV (ZUTOMAYO - SHADE)|==4==|
 [d]|==1==|dcOwj-QE_ZE|==2==|ZUTOMAYO|==3==|ずっと真夜中でいいのに。『暗く黒く』MV（ZUTOMAYO – DARKEN）|==4==|
 [d]|==1==|e5LaKxJVeVI|==2==|ZUTOMAYO|==3==|ずっと真夜中でいいのに。『綺羅キラー (feat. Mori Calliope)』MV (ZUTOMAYO – Kira Killer)|==4==|
+[d]|==1==|8tQiWHXSGN0|==2==|Tatsuya Kitani|==3==|ファタール / GEMN - Fatal / GEMN|==4==|
+[d]|==1==|f6VCUgg2oS8|==2==|AnoKira Senpai|==3==|Zenless Zone Zero Vocal Songs OST Collection|==4==|
+[d]|==1==|pQsF3pzOc54|==2==|Mac DeMarco|==3==|Chamber Of Reflection|==4==|
+[d]|==1==|wZlv3qDPfjk|==2==|弌誠|==3==|モエチャッカファイア / 弌誠：MUSIC VIDEO|==4==|

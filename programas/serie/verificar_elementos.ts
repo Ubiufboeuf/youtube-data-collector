@@ -5,8 +5,8 @@ const DEFAULT_CWD_FOLDER = '/home/mango/Dev/youtube-data-collector'
 verificarElementos()
 
 // export function verificarElementos (videoId: string) {
-export function verificarElementos () {
-  const videoId = process.argv[2]
+export function verificarElementos (id?: string) {
+  const videoId = id ?? process.argv[2]
   if (!videoId) {
     console.error('Falta especificar el id del video')
     return

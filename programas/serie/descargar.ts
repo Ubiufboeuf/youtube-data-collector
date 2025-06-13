@@ -27,41 +27,47 @@ export async function descargar () {
   }
 
   const paramsShowOptions = ['-F', `https://www.youtube.com/watch?v=${videoId}`]
-  const ytDlpOptions = spawnSync('yt-dlp', paramsShowOptions).stdout.toString()
+  const ytDlpOptions = spawnSync('yt-dlp_linux', paramsShowOptions).stdout.toString()
   console.log(ytDlpOptions)
 
   const rl = createInterface({ input: stdin, output: stdout })
   let answer: string
 
   let default_resolutions = `${DEFAULT_VIDEO_RESOLUTION},${DEFAULT_AUDIO_RESOLUTION}`
-  console.log('Elije el id de los elementos a descargar, de la forma [videoId],[audioId] (omite todos los espacios que puedas)')
+  console.log('Elije el id del audio y video a descargar, sepáralos por coma.')
   if (faltaAudio && faltaVideo) {
-    console.log('Falta audio y video')
+    console.log(`Falta tanto audio como video, por defecto ${default_resolutions}, entonces escribe: [videoId],[audioId]`)
   } else if (faltaAudio) {
-    console.log('Sólo falta audio, entonces escribe: ,[audioId]')
-    default_resolutions = `,${DEFAULT_AUDIO_RESOLUTION}`
+    default_resolutions = DEFAULT_AUDIO_RESOLUTION
+    console.log(`Sólo falta el audio, por defecto ${default_resolutions}, entonces escribe: [audioId]`)
   } else if (faltaVideo) {
-    console.log('Sólo falta video, entonces escribe: [videoId],')
-    default_resolutions = `${DEFAULT_VIDEO_RESOLUTION},`
+    default_resolutions = DEFAULT_VIDEO_RESOLUTION
+    console.log(`Sólo falta el video, por defecto ${default_resolutions}, entonces escribe: [videoId]`)
   }
 
-  answer = await rl.question(`Para descargar (por defecto ${default_resolutions}): `) || default_resolutions
+  // answer = await rl.question(`Descargar (${videoId}): `) || default_resolutions
   answer = default_resolutions
 
   rl.close()
+
+  if (!answer.includes(',') && faltaAudio) {
+    answer = `,${answer}`
+  } else if (!answer.includes(',') && faltaVideo) {
+    answer = `${answer},`
+  }
 
   const ytDlpParamsVideo = ['-f', `${answer.split(',')[0]}/mp4`, '-o', '%(id)s.%(ext)s', '-P', 'recursos/por_procesar/1_videos_sin_audio', `https://www.youtube.com/watch?v=${videoId}`]
   const ytDlpParamsAudio = ['-f', `${answer.split(',')[1]}`, '-x', '--audio-format', 'opus', '-o', '%(id)s.%(ext)s', '-P', 'recursos/por_procesar/1_audios', `https://www.youtube.com/watch?v=${videoId}`]
   const ffmpegParamsAudio = ['-i', `recursos/por_procesar/1_audios/${videoId}.opus`, `recursos/por_procesar/1_audios/${videoId}.mp4`]
 
-  // console.log('yt-dlp', paramsVideo.join(' '))
-  // console.log('yt-dlp', paramsAudio.join(' '))
-  
   if (faltaVideo) {
-    spawnSync('yt-dlp', ytDlpParamsVideo)
+    console.log('Descargando video...')
+    spawnSync('yt-dlp_linux', ytDlpParamsVideo)
   }
   if (faltaAudio) {
-    spawnSync('yt-dlp', ytDlpParamsAudio)
+    console.log('Descargando audio...')
+    spawnSync('yt-dlp_linux', ytDlpParamsAudio)
+    console.log('Convirtiendo audio...')
     spawnSync('ffmpeg', ffmpegParamsAudio)
 
     const audios = readdirSync(`recursos/por_procesar/1_audios/`)
@@ -69,6 +75,7 @@ export async function descargar () {
       unlinkSync(`recursos/por_procesar/1_audios/${videoId}.opus`)
     } else {
       console.log('No se descargó el audio')
+      process.exit(1)
     }
   }
 }
